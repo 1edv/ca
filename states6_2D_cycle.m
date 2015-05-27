@@ -1,14 +1,20 @@
-for big = 1:1:25
+%for big = 1:1:25
 %I have 6 states from that email. Lets see what I can do with them. Hmm...
 total_states = 6 ;
 
 %Random sizes and times for 1D initialization.
-size = 21;
+size = 11;
 time = 21;
 
 %TYPE AND SIZE DEFINITION
-A = ones(time,size);
-A(1,:) = randi([1 total_states],1,size);
+A = randi([1 total_states],size,size,1);
+
+A = repmat(A,[1 1 time]);
+
+
+%imagesc(A(:,:,4))
+
+%%
 
 
 %B is A for cyclic
@@ -47,12 +53,12 @@ B = A;
 %The ruleset here is the new state when a cell receives a signal
 %First line is change in state when you do receive a signal
 %Second line is a change in state when you do not receive a signal
-rule_original = [ 4 , 0 ;...
-         5 , 0 ;...
+rule_original = [ 5 , 0 ;...
+         3 , 0 ;...
          6 , 0 ;...
-         5 , 0 ;...
          2 , 0 ;...
-         4 , 0 ] ;
+         4 , 0 ;...
+         1 , 0 ] ;
 
 rule = rule_original(:,1) ;
 
@@ -70,26 +76,28 @@ graph = [ 0 , 0 , 0 , 0 , 0 , 0 ;...
           0 , 0 , 0 , 0 , 0 , 0 ;...
           1 , 1 , 0 , 0 , 0 , 0 ;...
           1 , 1 , 0 , 0 , 0 , 0 ;...
-          1 , 1 , 0 , 0 , 1 , 0 ] ;
+          1 , 1 , 1 , 0 , 1 , 0 ] ;
       
 
 final = rule .* graph ;
-          
+  
 
 
+%%
 
 %A graph with a cycle so we can see a comparision
 cycle_graph = [ 0 , 0 , 0 , 0 , 0 , 1 ;...
-          0 , 0 , 0 , 0 , 0 , 0 ;...
-          0 , 0 , 0 , 0 , 0 , 0 ;...
-          1 , 1 , 0 , 0 , 0 , 0 ;...
-          1 , 1 , 0 , 0 , 0 , 0 ;...
-          0 , 1 , 0 , 0 , 1 , 0 ] ;
+                0 , 0 , 0 , 0 , 0 , 0 ;...
+                0 , 0 , 0 , 0 , 0 , 0 ;...
+                1 , 1 , 0 , 0 , 0 , 0 ;...
+                1 , 1 , 0 , 0 , 0 , 0 ;...
+                0 , 1 , 1 , 0 , 1 , 0 ] ;
       
 
 cycle_final = rule .* cycle_graph ;
-          
-
+  
+%cycle_final
+%%
 
         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -111,46 +119,81 @@ cycle_final = rule .* cycle_graph ;
 for(t= 1:time-1),
 
 %
-    for(i=2:size-1)
+    for(x=2:size-1)
+        for(y=2:size-1)
+            
        
+            signal=0;
         %%FOR ACYCLIC
-        if( graph(A(t,i),A(t,i-1)) ~= 0  ) ,
-                A(t+1,i) = final(A(t,i) ,A(t,i-1));
-        elseif( graph(A(t,i),A(t,i+1)) ~= 0 )
-                A(t+1,i) = final(A(t,i) ,A(t,i+1));
-        else
-                A(t+1,i) = A(t,i);
+            for(i=[-1,0,1])
+                for(j=[-1,0,1])
+                   
+                    if( graph(A(x,y,t),A(x+i,y+j,t)) ~= 0  ) ,
+                        signal=1;
+                        signal_x = x+i;
+                        signal_y = y+j;
+                    end
+                    
+                end
+                
+            end
+            
+            %%SIGNAL DECISION 
+                    if( signal == 1 ) ,
+                        A(x,y,t+1) = final(A(x,y,t) ,A(signal_x,signal_y,t));
+              
+                    else
+                        A(x,y,t+1) = A(x,y,t);
 
-        end
+                    end
         
-        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        signal=0;
         %FOR CYCLIC   
-           if(   cycle_graph(B(t,i),B(t,i-1)) ~= 0  ) ,
-                B(t+1,i) = cycle_final(B(t,i) ,B(t,i-1));
-           elseif( cycle_graph(B(t,i),B(t,i+1)) ~= 0 ) 
-                B(t+1,i) = cycle_final(B(t,i) ,B(t,i+1));
-           else
-                B(t+1,i) = B(t,i);
+          for(i=[-1,0,1])
+                for(j=[-1,0,1])
+                   
+                     if( cycle_graph(B(x,y,t),B(x+i,y+j,t)) ~= 0  ) ,
+                        signal=1;
+                        csignal_x = x+i;
+                        csignal_y = y+j;
 
+                    end
+                    
+                end
+                
+          end
+            
+          
+           %%SIGNAL DECISION 
+                    if( signal == 1 ) ,
+                        B(x,y,t+1) = cycle_final(B(x,y,t) ,B(csignal_x,csignal_y,t));
+              
+                    else
+                        B(x,y,t+1) = B(x,y,t);
+
+                    end
+            
+            
+
+        
         end
-        
-
-        
     end
 end
-
-
+%%
 
 
 
 figure
 
+for(rec=1:time)
+
 subplot(121);
 %%%PLOT FOR ACYCLIC
-h = imagesc(A');
+h = imagesc(A(2:size-2,2:size-2,rec));
 axis square;
-caxis([0 6]);
-colormap(summer(6));
+caxis([0 7]);
+colormap(jet(7));
 q = colorbar;
 q.Location = 'southoutside';
 xlabel(q, 'State Marker');
@@ -170,10 +213,10 @@ set(gca,'YTickLabel',[]);
 
 subplot(122);
 %%%PLOT FOR CYCLIC
-h = imagesc(B');
+h = imagesc(B(2:size-2,2:size-2,rec));
 axis square;
-caxis([0 6]);
-colormap(summer(6));
+caxis([0 7]);
+colormap(jet(7));
 q = colorbar;
 q.Location = 'southoutside';
 %lcolorbar(labels,'fontweight','bold');
@@ -193,10 +236,13 @@ set(gca,'YTickLabel',[]);
 %%%
 
 
+M(rec) = getframe(gcf);
+
+end
 
 
 %%Save Figure
-savefig(strcat(mat2str(big),mat2str(rule_original(:,1))))
-saveas(gcf,strcat(mat2str(big),mat2str(rule_original(:,1)),'.png'))
-clearvars -except big;
-end
+%savefig(strcat(mat2str(big),mat2str(rule_original(:,1))))
+%saveas(gcf,strcat(mat2str(big),mat2str(rule_original(:,1)),'.png'))
+%clearvars -except big;
+%end
