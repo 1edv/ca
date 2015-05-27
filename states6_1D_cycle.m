@@ -1,4 +1,8 @@
-for big = 1:1:1
+%% WE WANT TO PERMUTE OVER ALL THE POSSIBLE RULESETS , SO:
+P = perms([1 2 3 4 5 6]);
+P = P';
+%%
+for big = 1:1:46656
 %I have 6 states from that email. Lets see what I can do with them. Hmm...
 total_states = 6 ;
 
@@ -48,6 +52,9 @@ B = A;
 %The ruleset here is the new state when a cell receives a signal
 %First line is change in state when you do receive a signal
 %Second line is a change in state when you do not receive a signal
+
+
+
 rule_original = [ 4 , 0 ;...
          3 , 0 ;...
          2 , 0 ;...
