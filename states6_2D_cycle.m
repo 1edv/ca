@@ -1,20 +1,24 @@
+clear all;
+
 %for big = 1:1:25
 %I have 6 states from that email. Lets see what I can do with them. Hmm...
 total_states = 6 ;
 
 %Random sizes and times for 1D initialization.
-size = 11;
-time = 21;
+size = 21;
+time = 41;
 
 %TYPE AND SIZE DEFINITION
 A = randi([1 total_states],size,size,1);
 
-A = repmat(A,[1 1 time]);
+%%
+%%%%%%%%%%
+%INITIALIZING FOR LAUREN PAPER
 
-
-%imagesc(A(:,:,4))
 
 %%
+A = repmat(A,[1 1 time]);
+%imagesc(A(:,:,4))
 
 
 %B is A for cyclic
@@ -53,11 +57,11 @@ B = A;
 %The ruleset here is the new state when a cell receives a signal
 %First line is change in state when you do receive a signal
 %Second line is a change in state when you do not receive a signal
-rule_original = [ 5 , 0 ;...
-         3 , 0 ;...
-         6 , 0 ;...
+rule_original = [ 6 , 0 ;...
          2 , 0 ;...
+         3 , 0 ;...
          4 , 0 ;...
+         5 , 0 ;...
          1 , 0 ] ;
 
 rule = rule_original(:,1) ;
@@ -192,8 +196,8 @@ subplot(121);
 %%%PLOT FOR ACYCLIC
 h = imagesc(A(2:size-2,2:size-2,rec));
 axis square;
-caxis([0 7]);
-colormap(jet(7));
+caxis([1 6]);
+colormap(jet(6));
 q = colorbar;
 q.Location = 'southoutside';
 xlabel(q, 'State Marker');
@@ -203,7 +207,7 @@ xlabel('Time Step');
 title(strcat('Acyclic | Rule: ',mat2str(rule_original(:,1))))
 ax = gca;
 ax.YTick = 1.5 : 1 : size -0.5;
-ax.XTick = 1.5 : 1 : time -0.5;
+ax.XTick = 1.5 : 1 : size -0.5;
 ax.YGrid = 'on';
 ax.XGrid = 'on';
 set(gca,'XTickLabel',[]);
@@ -215,10 +219,12 @@ subplot(122);
 %%%PLOT FOR CYCLIC
 h = imagesc(B(2:size-2,2:size-2,rec));
 axis square;
-caxis([0 7]);
-colormap(jet(7));
+caxis([1 6]);
+colormap(jet(6));
 q = colorbar;
 q.Location = 'southoutside';
+%set(q,'YTick',[1,2,3,4,5,6])
+
 %lcolorbar(labels,'fontweight','bold');
 
 
@@ -228,7 +234,7 @@ xlabel('Time Step');
 title(strcat('Cyclic | Rule: ',mat2str(rule_original(:,1))));
 ax = gca;
 ax.YTick = 1.5 : 1 : size -0.5;
-ax.XTick = 1.5 : 1 : time -0.5;
+ax.XTick = 1.5 : 1 : size -0.5;
 ax.YGrid = 'on';
 ax.XGrid = 'on';
 set(gca,'XTickLabel',[]);
@@ -237,7 +243,7 @@ set(gca,'YTickLabel',[]);
 
 
 M(rec) = getframe(gcf);
-
+%close all;
 end
 
 
@@ -246,3 +252,8 @@ end
 %saveas(gcf,strcat(mat2str(big),mat2str(rule_original(:,1)),'.png'))
 %clearvars -except big;
 %end
+
+%%
+movie2avi(M,strcat(mat2str(rule_original(:,1)),'.avi'))
+
+

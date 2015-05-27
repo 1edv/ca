@@ -48,10 +48,10 @@ B = A;
 %The ruleset here is the new state when a cell receives a signal
 %First line is change in state when you do receive a signal
 %Second line is a change in state when you do not receive a signal
-rule_original = [ 6 , 0 ;...
-         1 , 0 ;...
+rule_original = [ 4 , 0 ;...
          3 , 0 ;...
-         5 , 0 ;...
+         2 , 0 ;...
+         1 , 0 ;...
          4 , 0 ;...
          2 , 0 ] ;
 
@@ -150,8 +150,8 @@ subplot(121);
 %%%PLOT FOR ACYCLIC
 h = imagesc(A(1:time-1,1:size-1)');
 axis square;
-caxis([0 7]);
-colormap(jet(7));
+caxis([1 6]);
+colormap(parula(6));
 q = colorbar;
 q.Location = 'southoutside';
 xlabel(q, 'State Marker');
@@ -173,8 +173,8 @@ subplot(122);
 %%%PLOT FOR CYCLIC
 h = imagesc(B(1:time-1,1:size-1)');
 axis square;
-caxis([0 7]);
-colormap(parula(7));
+caxis([1 6]);
+colormap(parula(6));
 q = colorbar;
 q.Location = 'southoutside';
 %lcolorbar(labels,'fontweight','bold');
@@ -203,4 +203,4 @@ saveas(gcf,strcat(mat2str(big),mat2str(rule_original(:,1)),'.png'))
 end
 
 %%
-A'
+A';
