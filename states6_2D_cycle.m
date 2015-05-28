@@ -2,6 +2,7 @@
 clear all;
 P = PermsRep([1 2 3 4 5 6]);
 P = P';
+total_permutations = size(P,2);
 
 %I have 6 states from that email. Lets see what I can do with them. Hmm...
 total_states = 6 ;
@@ -10,7 +11,7 @@ total_states = 6 ;
 size = 21;
 time = 101;
 %%
-for big = 1:1:46656 %loop over all possible rulesets
+for big = 1:1:total_permutations %loop over all possible rulesets
 
 
 
@@ -59,7 +60,8 @@ rule = rule_original(:,1) ;
 
 end
 
-rule = P(:,big); 
+rule_original = P(:,big); 
+rule=rule_original;
 rule = [ rule rule rule rule rule rule];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -105,6 +107,14 @@ cycle_final = rule .* cycle_graph ;
 
 %HOW CAN THERE BE A CYCLIC GRAPH , WHAT ARE THE RULES AND EQUATIONS THAT
 %WOULD GIVE US A CYCLIC GRAPH. THINK ABOUT IT.
+
+if (rule_original(1)~=1 & ...
+    rule_original(2)~=2 & ...
+    rule_original(3)~=3 & ...
+    rule_original(4)~=4 & ...
+    rule_original(5)~=5 & ...
+    rule_original(6)~=6 )
+    
 
 
 
@@ -284,4 +294,4 @@ end
 %%
 %movie2avi(M,strcat(mat2str(rule_original(:,1)),'.avi'))
 
-
+end

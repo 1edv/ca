@@ -2,7 +2,7 @@
 clear all;
 P = PermsRep([1 2 3 4 5 6]);
 P = P';
-total_permutations = size(P,2);
+size(P,1)
 %I have 6 states from that email. Lets see what I can do with them. Hmm...
 total_states = 6 ;
 
@@ -10,7 +10,7 @@ total_states = 6 ;
 size = 21;
 time = 101;
 %%
-for big = 1:1:total_permutations %loop over all possible rulesets
+for big = 1:1:46656 %loop over all possible rulesets
 
 
     
@@ -86,15 +86,8 @@ cycle_final = rule .* cycle_graph ;
 
 
     
-% I am imposing a condition here : the rule must not allow 1->1 , 2->2
-% ,etc. Basically, I am not allowing no transition
-
-if (rule_original(1)~=1 & ...
-    rule_original(2)~=2 & ...
-    rule_original(3)~=3 & ...
-    rule_original(4)~=4 & ...
-    rule_original(5)~=5 & ...
-    rule_original(6)~=6 )
+    
+    
     
     
 for sample_initialization = 1:1:20    
@@ -253,8 +246,6 @@ end %No need for figures
 %saveas(gcf,strcat(mat2str(big),mat2str(rule_original(:,1)),'.png'))
 %clearvars -except big;
 %close all
-end
-
 end
 
 end
