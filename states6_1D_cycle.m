@@ -1,62 +1,20 @@
 %% WE WANT TO PERMUTE OVER ALL THE POSSIBLE RULESETS , SO:
+clear all;
 P = PermsRep([1 2 3 4 5 6]);
 P = P';
 
-%%
-for big = 1:1:46656 %loop over all possible rulesets
-
-   
-for sample_initialization = 1:1:20    
-    
-
-%Initializing the events to and time to 0
-stat(big).acyclic(sample_initialization).event=0;
-stat(big).acyclic(sample_initialization).time=1;  
-stat(big).cyclic(sample_initialization).event=0;
-stat(big).cyclic(sample_initialization).time=1;      
-    
 %I have 6 states from that email. Lets see what I can do with them. Hmm...
 total_states = 6 ;
 
 %Random sizes and times for 1D initialization.
 size = 21;
 time = 101;
-
-%TYPE AND SIZE DEFINITION
-A = randi([1 total_states],1,size);
-A = repmat ( A, time, 1);
-
 %%
+for big = 1:1:46656 %loop over all possible rulesets
 
-%B is A for cyclic
-B = A;
-
-%
-%Now what I am going to do is, I am going to have a ruleset and then when I
-%am going to compare the results for graphs that have cycles and graphs
-%that do not have cycles! And then I will change the initializations and
-%the rulesets to see where that takes us.
-
-%THREE THINGS THAT CAN COMPLETELY DEFINE FATE FOR OUR DETERMINISTIC MODEL:
-    %GRAPH
-    %RULESET
-    %INITIALIZATION
-    
 
     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-%INITIALIZATION
-%Different ways to initialize the cells
-
-
-
-
-
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -77,9 +35,8 @@ B = A;
 %rule = rule_original(:,1) ;
 
 
-%% This part of the code is for the statistics
-rule = P(:,big); 
-
+rule_original = P(:,big); 
+rule = rule_original;
 
 %%
 rule = [ rule rule rule rule rule rule];
@@ -128,6 +85,57 @@ cycle_final = rule .* cycle_graph ;
 
 
 
+    
+    
+    
+    
+    
+for sample_initialization = 1:1:20    
+    
+
+%Initializing the events to and time to 0
+stat(big).acyclic(sample_initialization).event=0;
+stat(big).acyclic(sample_initialization).time=1;  
+stat(big).cyclic(sample_initialization).event=0;
+stat(big).cyclic(sample_initialization).time=1;      
+    
+
+
+%TYPE AND SIZE DEFINITION
+A = randi([1 total_states],1,size);
+A = repmat ( A, time, 1);
+
+%%
+
+%B is A for cyclic
+B = A;
+
+%
+%Now what I am going to do is, I am going to have a ruleset and then when I
+%am going to compare the results for graphs that have cycles and graphs
+%that do not have cycles! And then I will change the initializations and
+%the rulesets to see where that takes us.
+
+%THREE THINGS THAT CAN COMPLETELY DEFINE FATE FOR OUR DETERMINISTIC MODEL:
+    %GRAPH
+    %RULESET
+    %INITIALIZATION
+    
+
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+%INITIALIZATION
+%Different ways to initialize the cells
+
+
+
+
+
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -161,12 +169,12 @@ for(t= 1:time-1),
         %FOR CYCLIC   
            if(   cycle_graph(B(t,i),B(t,i-1)) ~= 0  ) ,
                 B(t+1,i) = cycle_final(B(t,i) ,B(t,i-1));
-                stat(big).cyclic(sample_initialization).event=stat(big).acyclic(sample_initialization).event+1;
+                stat(big).cyclic(sample_initialization).event=stat(big).cyclic(sample_initialization).event+1;
                 stat(big).cyclic(sample_initialization).time=t;
                 
            elseif( cycle_graph(B(t,i),B(t,i+1)) ~= 0 ) 
                 B(t+1,i) = cycle_final(B(t,i) ,B(t,i+1));
-                stat(big).cyclic(sample_initialization).event=stat(big).acyclic(sample_initialization).event+1;
+                stat(big).cyclic(sample_initialization).event=stat(big).cyclic(sample_initialization).event+1;
                 stat(big).cyclic(sample_initialization).time=t;
            else
                 B(t+1,i) = B(t,i);

@@ -1,28 +1,18 @@
+%% WE WANT TO PERMUTE OVER ALL THE POSSIBLE RULESETS , SO:
 clear all;
+P = PermsRep([1 2 3 4 5 6]);
+P = P';
 
-%for big = 1:1:25
 %I have 6 states from that email. Lets see what I can do with them. Hmm...
 total_states = 6 ;
 
 %Random sizes and times for 1D initialization.
 size = 21;
-time = 41;
-
-%TYPE AND SIZE DEFINITION
-A = randi([1 total_states],size,size,1);
-
+time = 101;
 %%
-%%%%%%%%%%
-%INITIALIZING FOR LAUREN PAPER
+for big = 1:1:46656 %loop over all possible rulesets
 
 
-%%
-A = repmat(A,[1 1 time]);
-%imagesc(A(:,:,4))
-
-
-%B is A for cyclic
-B = A;
 
 %
 %Now what I am going to do is, I am going to have a ruleset and then when I
@@ -49,7 +39,7 @@ B = A;
 
 
 
-
+if 0% we dont need this for the statistics section
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -66,6 +56,10 @@ rule_original = [ 6 , 0 ;...
 
 rule = rule_original(:,1) ;
 
+
+end
+
+rule = P(:,big); 
 rule = [ rule rule rule rule rule rule];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -115,7 +109,35 @@ cycle_final = rule .* cycle_graph ;
 
 
 
+for sample_initialization = 1:1:20    
 
+stat(big).acyclic(sample_initialization).event=0;
+stat(big).acyclic(sample_initialization).time=1;  
+stat(big).cyclic(sample_initialization).event=0;
+stat(big).cyclic(sample_initialization).time=1;      
+    
+    
+    
+
+
+%TYPE AND SIZE DEFINITION
+A = randi([1 total_states],size,size,1);
+
+%%
+%%%%%%%%%%
+%INITIALIZING FOR LAUREN PAPER
+
+
+%%
+A = repmat(A,[1 1 time]);
+%imagesc(A(:,:,4))
+
+
+%B is A for cyclic
+B = A;
+    
+    
+    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %UPDATION 
@@ -145,6 +167,8 @@ for(t= 1:time-1),
             %%SIGNAL DECISION 
                     if( signal == 1 ) ,
                         A(x,y,t+1) = final(A(x,y,t) ,A(signal_x,signal_y,t));
+                         stat(big).acyclic(sample_initialization).event=stat(big).acyclic(sample_initialization).event+1;
+                         stat(big).acyclic(sample_initialization).time=t;
               
                     else
                         A(x,y,t+1) = A(x,y,t);
@@ -172,6 +196,8 @@ for(t= 1:time-1),
            %%SIGNAL DECISION 
                     if( signal == 1 ) ,
                         B(x,y,t+1) = cycle_final(B(x,y,t) ,B(csignal_x,csignal_y,t));
+                         stat(big).cyclic(sample_initialization).event=stat(big).cyclic(sample_initialization).event+1;
+                         stat(big).cyclic(sample_initialization).time=t;
               
                     else
                         B(x,y,t+1) = B(x,y,t);
@@ -186,8 +212,9 @@ for(t= 1:time-1),
 end
 %%
 
-
-
+end
+ 
+if 0 % we dont need this section for now !
 figure
 
 for(rec=1:time)
@@ -246,14 +273,15 @@ M(rec) = getframe(gcf);
 %close all;
 end
 
+end %if statement
 
 %%Save Figure
 %savefig(strcat(mat2str(big),mat2str(rule_original(:,1))))
 %saveas(gcf,strcat(mat2str(big),mat2str(rule_original(:,1)),'.png'))
 %clearvars -except big;
 %end
-
+end
 %%
-movie2avi(M,strcat(mat2str(rule_original(:,1)),'.avi'))
+%movie2avi(M,strcat(mat2str(rule_original(:,1)),'.avi'))
 
 
