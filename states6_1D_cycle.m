@@ -5,7 +5,7 @@ P = P';
 total_permutations = size(P,2);
 %I have 6 states from that email. Lets see what I can do with them. Hmm...
 total_states = 6 ;
-
+ruleset=[];
 %Random sizes and times for 1D initialization.
 size = 21;
 time = 101;
@@ -97,6 +97,8 @@ if (rule_original(1)~=1 & ...
     rule_original(6)~=6 )
     
     
+ruleset=[ruleset rule_original]
+
 for sample_initialization = 1:1:20    
     
 
@@ -259,3 +261,5 @@ end
 
 end
 %%
+
+save('1D_statistics_deranged_trackowitz','stat','ruleset')
