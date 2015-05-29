@@ -17,7 +17,7 @@ total_permutations = size(P,2);
 %% 
 plot_acyclic_time = [];
 plot_cyclic_time = [];
-
+%%FIND THE INDEXes THAT are ALLOWED
 index_set=[];
 for i=1:1:total_permutations
     
@@ -71,13 +71,32 @@ end
     
     
 
-%%
+%% SCATTER PLOt
+scatterhist(mean(acyclic_time_matrix,2), mean(cyclic_time_matrix,2))
 
-scatter(mean(acyclic_time_matrix,2),mean(cyclic_time_matrix,2))
+
+    %% COOL Scatter Plot
+    AB = [mean(acyclic_event_matrix,2) mean(cyclic_event_matrix,2)]
+% Find unique rows and corresponding indices
+[uniqueAB, ~, n] = unique(AB, 'rows');
+% Find number of occurrences
+nHist = hist(n, unique(n));
+mx = max(nHist);
+% Create colors for each number of occurrence
+colors = jet(mx);
+colormap(colors);
+% Construct a color matrix
+cMatrix = colors(nHist, :);
+% Create scatter plot
+scatter(uniqueAB(:, 1), uniqueAB(:, 2), 25, cMatrix, 'filled');
+colorbar('YTick', linspace(1/(2*mx), 1-1/(2*mx), mx), ...
+         'YTickLabel', 1:mx);
+    
     %%
+    
 figure
 subplot(121)
-nhist(plot_acyclic_time)
+histogram(mean(acyclic_event_matrix,2), 1:1:100)
 
 subplot(122);
-nhist(plot_cyclic_time)
+histogram(mean(cyclic_event_matrix,2), 1:1:100)

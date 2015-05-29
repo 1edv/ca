@@ -1,3 +1,5 @@
+%% %% PARFOR NEEDS TO WORK
+
 %% WE WANT TO PERMUTE OVER ALL THE POSSIBLE RULESETS , SO:
 clear all;
 P = PermsRep([1 2 3 4 5 6]);
@@ -8,9 +10,9 @@ total_states = 6 ;
 ruleset=[];
 %Random sizes and times for 1D initialization.
 size = 21;
-time = 101;
+time = 21;
 
-for big = 1:1:total_permutations %loop over all possible rulesets
+parfor big = 1:1:total_permutations %loop over all possible rulesets
 for sample_initialization=1:1:20
  
 stat(big).acyclic(sample_initialization).event=0;
@@ -20,10 +22,10 @@ stat(big).cyclic(sample_initialization).time=1;
     
 end
 end
-%%
+
 
 index_set=[];
-for i=1:1:total_permutations
+parfor i=1:1:total_permutations
     
     rule_original = P(:,i); 
 
@@ -37,8 +39,15 @@ for i=1:1:total_permutations
             
     end       
 end
+
+
+%% PARFOR WORKS TILL HERE
+
+
+
 parfor big = 1:1:total_permutations %loop over all possible rulesets
 
+    
 
     
     
@@ -100,22 +109,6 @@ cycle_graph = [ 0 , 0 , 0 , 0 , 0 , 1 ;...
 cycle_final = rule .* cycle_graph ;
           
 
-
-        
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%HOW CAN THERE BE A CYCLIC GRAPH , WHAT ARE THE RULES AND EQUATIONS THAT
-%WOULD GIVE US A CYCLIC GRAPH. THINK ABOUT IT.
-
-
-
-    
-% I am imposing a condition here : the rule must not allow 1->1 , 2->2
-% ,etc. Basically, I am not allowing no transition
-
 if (rule_original(1)~=1 & ...
     rule_original(2)~=2 & ...
     rule_original(3)~=3 & ...
@@ -124,7 +117,14 @@ if (rule_original(1)~=1 & ...
     rule_original(6)~=6 )
     
     
-ruleset=[ruleset rule_original]
+ruleset=[ruleset rule_original];
+
+
+
+acyclic_event2=[];
+cyclic_event2=[];
+acyclic_time2=[];
+cyclic_time2=[];
 
 for sample_initialization = 1:1:20    
     
@@ -172,6 +172,10 @@ B = A;
 %UPDATION 
 
 
+acyclic_event1=0;
+cyclic_event1=0;
+acyclic_time1=1;
+cyclic_time1=1;
 
 for(t= 1:time-1),
 
@@ -181,13 +185,17 @@ for(t= 1:time-1),
         %%FOR ACYCLIC
         if( graph(A(t,i),A(t,i-1)) ~= 0  ) ,
                 A(t+1,i) = final(A(t,i) ,A(t,i-1));
-                stat(big).acyclic(sample_initialization).event=stat(big).acyclic(sample_initialization).event+1;
-                stat(big).acyclic(sample_initialization).time=t;
+                acyclic_event1=acyclic_event1 + 1;
+                acyclic_time1=t;
+                %stat(big).acyclic(sample_initialization).event=stat(big).acyclic(sample_initialization).event+1;
+                %stat(big).acyclic(sample_initialization).time=t;
                 
         elseif( graph(A(t,i),A(t,i+1)) ~= 0 )
                 A(t+1,i) = final(A(t,i) ,A(t,i+1));
-                stat(big).acyclic(sample_initialization).event=stat(big).acyclic(sample_initialization).event+1;
-                stat(big).acyclic(sample_initialization).time=t;
+                acyclic_event1=acyclic_event1 + 1;
+                acyclic_time1=t;
+                %stat(big).acyclic(sample_initialization).event=stat(big).acyclic(sample_initialization).event+1;
+                %stat(big).acyclic(sample_initialization).time=t;
                 
         else
                 A(t+1,i) = A(t,i);
@@ -198,13 +206,17 @@ for(t= 1:time-1),
         %FOR CYCLIC   
            if(   cycle_graph(B(t,i),B(t,i-1)) ~= 0  ) ,
                 B(t+1,i) = cycle_final(B(t,i) ,B(t,i-1));
-                stat(big).cyclic(sample_initialization).event=stat(big).cyclic(sample_initialization).event+1;
-                stat(big).cyclic(sample_initialization).time=t;
+                cyclic_event1=cyclic_event1 + 1;
+                cyclic_time1=t;
+                %stat(big).cyclic(sample_initialization).event=stat(big).cyclic(sample_initialization).event+1;
+                %stat(big).cyclic(sample_initialization).time=t;
                 
            elseif( cycle_graph(B(t,i),B(t,i+1)) ~= 0 ) 
                 B(t+1,i) = cycle_final(B(t,i) ,B(t,i+1));
-                stat(big).cyclic(sample_initialization).event=stat(big).cyclic(sample_initialization).event+1;
-                stat(big).cyclic(sample_initialization).time=t;
+                cyclic_event1=cyclic_event1 + 1;
+                cyclic_time1=t;
+                %stat(big).cyclic(sample_initialization).event=stat(big).cyclic(sample_initialization).event+1;
+                %stat(big).cyclic(sample_initialization).time=t;
            else
                 B(t+1,i) = B(t,i);
 
@@ -215,71 +227,13 @@ for(t= 1:time-1),
     end
 end
 
-
-
-if 0 % no need for figures
-
-figure
-
-subplot(121);
-%%%PLOT FOR ACYCLIC
-h = imagesc(A(1:time-1,1:size-1)');
-axis square;
-caxis([1 6]);
-colormap(parula(6));
-q = colorbar;
-q.Location = 'southoutside';
-xlabel(q, 'State Marker');
-
-ylabel('Cell Position');
-xlabel('Time Step');
-title(strcat('Acyclic | Rule: ',mat2str(rule_original(:,1))))
-ax = gca;
-ax.YTick = 1.5 : 1 : size -0.5;
-ax.XTick = 1.5 : 1 : time -0.5;
-ax.YGrid = 'on';
-ax.XGrid = 'on';
-set(gca,'XTickLabel',[]);
-set(gca,'YTickLabel',[]);
-%%%
-
-
-subplot(122);
-%%%PLOT FOR CYCLIC
-h = imagesc(B(1:time-1,1:size-1)');
-axis square;
-caxis([1 6]);
-colormap(parula(6));
-q = colorbar;
-q.Location = 'southoutside';
-%lcolorbar(labels,'fontweight','bold');
-
-
-xlabel(q, 'State Marker');
-ylabel('Cell Position');
-xlabel('Time Step');
-title(strcat('Cyclic | Rule: ',mat2str(rule_original(:,1))));
-ax = gca;
-ax.YTick = 1.5 : 1 : size -0.5;
-ax.XTick = 1.5 : 1 : time -0.5;
-ax.YGrid = 'on';
-ax.XGrid = 'on';
-set(gca,'XTickLabel',[]);
-set(gca,'YTickLabel',[]);
-%%%
-
-end %No need for figures
-
-%%Save Figure
-%savefig(strcat(mat2str(big),mat2str(rule_original(:,1))))
-%saveas(gcf,strcat(mat2str(big),mat2str(rule_original(:,1)),'.png'))
-%clearvars -except big;
-%close all
+acyclic_event2=[acyclic_event2 acyclic_event1]
+cyclic_event2=[cyclic_event2 cyclic_event1]
+acyclic_time2=1;
+cyclic_time2=
+end
 end
 
-end
 
 end
-%%
-
-save('1D_statistics_deranged_trackowitz','stat','ruleset')
+    
