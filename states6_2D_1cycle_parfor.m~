@@ -147,7 +147,7 @@ acyclic_time2=[];
 cyclic_time2=[];
 
 
-for sample_initialization = 1:1:10    
+for sample_initialization = 1:1:0    
  
     
  
@@ -320,7 +320,7 @@ end %if statement
 %clearvars -except big;
 %end
 
-end
+%end
 
 acyclic_event3=[acyclic_event3 ;acyclic_event2];
 cyclic_event3=[cyclic_event3 ;cyclic_event2];

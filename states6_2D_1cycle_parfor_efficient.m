@@ -191,28 +191,147 @@ for(t= 1:time-1),
  
             
         %%FOR ACYCLIC and ACYCLIC
-            for(i=[-1,0,1])
-                for(j=[-1,0,1])
+            
                    
                     %CHECK FOR THE ACYCLIC GRAPH
-                    if( graph(A(x,y,t),A(x+i,y+j,t)) ~= 0  ) ,
+                    
+                    %-1,-1
+                     
+                    if( graph(A(x,y,t),A(x-1,y-1,t)) ~= 0  ) ,
                         a_signal=1;
-                        a_signal_x = x+i;
-                        a_signal_y = y+j;
+                        a_signal_x = x-1;
+                        a_signal_y = y-1;
                     end
+                    
+                     %-1,0
+                    if( graph(A(x,y,t),A(x-1,y,t)) ~= 0  ) ,
+                        a_signal=1;
+                        a_signal_x = x-1;
+                        a_signal_y = y;
+                    end
+                    
+                     %-1,1
+                    if( graph(A(x,y,t),A(x-1,y+1,t)) ~= 0  ) ,
+                        a_signal=1;
+                        a_signal_x = x-1;
+                        a_signal_y = y+1;
+                    end
+                    
+                     %0,-1
+                    if( graph(A(x,y,t),A(x,y-1,t)) ~= 0  ) ,
+                        a_signal=1;
+                        a_signal_x = x;
+                        a_signal_y = y-1;
+                    end
+                    
+                                     
+                     %0,1
+                    if( graph(A(x,y,t),A(x,y+1,t)) ~= 0  ) ,
+                        a_signal=1;
+                        a_signal_x = x;
+                        a_signal_y = y+1;
+                    end
+                    
+                    
+                     %1,-1
+                    if( graph(A(x,y,t),A(x+1,y-1,t)) ~= 0  ) ,
+                        a_signal=1;
+                        a_signal_x = x+1;
+                        a_signal_y = y-1;
+                    end
+                    
+                     %1,0
+                    if( graph(A(x,y,t),A(x+1,y,t)) ~= 0  ) ,
+                        a_signal=1;
+                        a_signal_x = x+1;
+                        a_signal_y = y;
+                    end
+                    
+                     %1,1
+                    if( graph(A(x,y,t),A(x+1,y+1,t)) ~= 0  ) ,
+                        a_signal=1;
+                        a_signal_x = x+1;
+                        a_signal_y = y+1;
+                    end
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     
                     
                     %CHECK FOR THE CYCLIC GRAPH
-                    if( cycle_graph(B(x,y,t),B(x+i,y+j,t)) ~= 0  ) ,
+                    
+                    %-1,-1
+                    if( cycle_graph(B(x,y,t),B(x-1,y-1,t)) ~= 0  ) ,
                         c_signal=1;
-                        c_signal_x = x+i;
-                        c_signal_y = y+j;
+                        c_signal_x = x-1;
+                        c_signal_y = y-1;
  
                     end
                     
-                end
+                    %-1,0
+                    if( cycle_graph(B(x,y,t),B(x-1,y,t)) ~= 0  ) ,
+                        c_signal=1;
+                        c_signal_x = x-1;
+                        c_signal_y = y;
+ 
+                    end
+                    
+                    %-1,1
+                    if( cycle_graph(B(x,y,t),B(x-1,y+1,t)) ~= 0  ) ,
+                        c_signal=1;
+                        c_signal_x = x-1;
+                        c_signal_y = y+1;
+ 
+                    end
+                    
+                    %0,-1
+                    if( cycle_graph(B(x,y,t),B(x,y-1,t)) ~= 0  ) ,
+                        c_signal=1;
+                        c_signal_x = x;
+                        c_signal_y = y-1;
+ 
+                    end
+                    
+                    %0,1
+                    if( cycle_graph(B(x,y,t),B(x,y+1,t)) ~= 0  ) ,
+                        c_signal=1;
+                        c_signal_x = x;
+                        c_signal_y = y+1;
+ 
+                    end
+                    
+                    %1,-1
+                    if( cycle_graph(B(x,y,t),B(x+1,y-1,t)) ~= 0  ) ,
+                        c_signal=1;
+                        c_signal_x = x+1;
+                        c_signal_y = y-1;
+ 
+                    end
+                    
+                    %1,0
+                    if( cycle_graph(B(x,y,t),B(x+1,y,t)) ~= 0  ) ,
+                        c_signal=1;
+                        c_signal_x = x+1;
+                        c_signal_y = y;
+ 
+                    end
+                    
+                    %1,1
+                    if( cycle_graph(B(x,y,t),B(x+1,y+1,t)) ~= 0  ) ,
+                        c_signal=1;
+                        c_signal_x = x+1;
+                        c_signal_y = y+1;
+ 
+                    end
+                    
                 
-            end
             
             %%SIGNAL DECISION FOR ACYCLIC
                     if( a_signal == 1 ) ,
