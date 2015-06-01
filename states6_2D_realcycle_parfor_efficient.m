@@ -42,7 +42,7 @@ cyclic_time3=[];
 total_size = numel(index_set)
 
 %%
-parfor big = 1:1:index %loop over all possible rulesets
+parfor big = 1:1:total_size %loop over all possible rulesets
 
 
 
