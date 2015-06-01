@@ -39,8 +39,10 @@ cyclic_event3=[];
 acyclic_time3=[];
 cyclic_time3=[];
 
+total_size = numel(index_set)
+
 %%
-parfor big = 1:1:100 %loop over all possible rulesets
+parfor big = 1:1:index %loop over all possible rulesets
 
 
 
@@ -115,12 +117,12 @@ final = rule .* graph ;
 %%
 
 %A graph with a cycle so we can see a comparision
-cycle_graph = [ 0 , 0 , 0 , 0 , 0 , 1 ;...
+cycle_graph = [ 0 , 0 , 0 , 0 , 0 , 0 ;...
                 0 , 0 , 0 , 0 , 0 , 0 ;...
                 0 , 0 , 0 , 0 , 0 , 0 ;...
-                1 , 1 , 0 , 0 , 0 , 1 ;...
-                1 , 1 , 0 , 0 , 0 , 0 ;...
-                0 , 1 , 1 , 0 , 1 , 0 ] ;
+                0 , 1 , 1 , 0 , 1 , 0 ;...
+                1 , 0 , 1 , 1 , 0 , 0 ;...
+                1 , 1 , 1 , 1 , 1 , 0 ] ;
 
 
 cycle_final = rule .* cycle_graph ;
