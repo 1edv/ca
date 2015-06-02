@@ -30,6 +30,7 @@ parfor i=1:1:total_permutations
     end
 end
 %%
+
 total_valid_rulesets = numel(index_set);
 %%
 
