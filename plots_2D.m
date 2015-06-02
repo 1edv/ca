@@ -2,7 +2,7 @@
 %% Load the datafile
 clear all;
 
-load('2D_statistics_deranged_trackowitz')
+load('2D_statistics_deranged_parfor_realcycle')
 
 %%
 
@@ -76,7 +76,7 @@ end
 
 %% SCATTER PLOt
 figure
-scatterhist(mean(acyclic_event_matrix,2), mean(cyclic_event_matrix,2))
+scatterhist(mean(acyclic_time3,2), mean(cyclic_time3,2))
 xlabel('Acyclic - Time to Stabilization');
 ylabel('Cyclic - Time to Stabilization');
 refline(1,0)

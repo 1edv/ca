@@ -1,38 +1,15 @@
-%% WE WANT TO PERMUTE OVER ALL THE POSSIBLE RULESETS , SO:
 clear all;
-P = PermsRep([1 2 3 4 5 6]);
-P = P';
-total_permutations = size(P,2);
- 
 %I have 6 states from that email. Lets see what I can do with them. Hmm...
 total_states = 6 ;
 ruleset=[];
- 
-%Random sizes and times for 1D initialization.
-size = 21;
-time = 21;
- 
- 
- 
-for big = 1:1:total_permutations %loop over all possible rulesets
-for sample_initialization=1:1:10
- 
-stat(big).acyclic(sample_initialization).event=0;
-stat(big).acyclic(sample_initialization).time=1;  
-stat(big).cyclic(sample_initialization).event=0;
-stat(big).cyclic(sample_initialization).time=1;      
-    
-end
-end
- 
+time=21;
+size=21;
+
+
  
  
  
 %%
-parfor big = 1:1:total_permutations %loop over all possible rulesets
- 
- 
- 
 %
 %Now what I am going to do is, I am going to have a ruleset and then when I
 %am going to compare the results for graphs that have cycles and graphs
@@ -58,7 +35,7 @@ parfor big = 1:1:total_permutations %loop over all possible rulesets
  
  
  
-if 0% we dont need this for the statistics section
+if 1% we dont need this for the statistics section
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
@@ -66,20 +43,19 @@ if 0% we dont need this for the statistics section
 %The ruleset here is the new state when a cell receives a signal
 %First line is change in state when you do receive a signal
 %Second line is a change in state when you do not receive a signal
-rule_original = [ 6 , 0 ;...
+rule_original = [ 3 , 0 ;...
+         1 , 0 ;...
          2 , 0 ;...
-         3 , 0 ;...
-         4 , 0 ;...
          5 , 0 ;...
-         1 , 0 ] ;
+         4 , 0 ;...
+         4 , 0 ] ;
  
 rule = rule_original(:,1) ;
  
  
 end
  
-rule_original = P(:,big); 
-rule=rule_original;
+
 rule = [ rule rule rule rule rule rule];
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,12 +80,13 @@ final = rule .* graph ;
 %%
  
 %A graph with a cycle so we can see a comparision
-cycle_graph = [ 0 , 0 , 0 , 0 , 0 , 1 ;...
+cycle_graph = [ 0 , 0 , 0 , 0 , 0 , 0 ;...
                 0 , 0 , 0 , 0 , 0 , 0 ;...
                 0 , 0 , 0 , 0 , 0 , 0 ;...
-                1 , 1 , 0 , 0 , 0 , 0 ;...
-                1 , 1 , 0 , 0 , 0 , 0 ;...
-                0 , 1 , 1 , 0 , 1 , 0 ] ;
+                0 , 1 , 1 , 0 , 1 , 0 ;...
+                1 , 0 , 1 , 1 , 0 , 0 ;...
+                1 , 1 , 1 , 1 , 1 , 0 ] ;
+
       
  
 cycle_final = rule .* cycle_graph ;
@@ -122,25 +99,8 @@ cycle_final = rule .* cycle_graph ;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
  
+
  
-%HOW CAN THERE BE A CYCLIC GRAPH , WHAT ARE THE RULES AND EQUATIONS THAT
-%WOULD GIVE US A CYCLIC GRAPH. THINK ABOUT IT.
- 
-if (rule_original(1)~=1 & ...
-    rule_original(2)~=2 & ...
-    rule_original(3)~=3 & ...
-    rule_original(4)~=4 & ...
-    rule_original(5)~=5 & ...
-    rule_original(6)~=6 )
-    
-ruleset=[ruleset rule_original]
- 
- 
- 
- 
-for sample_initialization = 1:1:10    
- 
-    
  
  
 %TYPE AND SIZE DEFINITION
@@ -203,8 +163,7 @@ for(t= 1:time-1),
             %%SIGNAL DECISION FOR ACYCLIC
                     if( a_signal == 1 ) ,
                         A(x,y,t+1) = final(A(x,y,t) ,A(a_signal_x,a_signal_y,t));
-                         stat(big).acyclic(sample_initialization).event=stat(big).acyclic(sample_initialization).event+1;
-                         stat(big).acyclic(sample_initialization).time=t;
+                         
               
                     else
                         A(x,y,t+1) = A(x,y,t);
@@ -217,9 +176,7 @@ for(t= 1:time-1),
            %%SIGNAL DECISION for CYCLIC
                     if( c_signal == 1 ) ,
                         B(x,y,t+1) = cycle_final(B(x,y,t) ,B(c_signal_x,c_signal_y,t));
-                         stat(big).cyclic(sample_initialization).event=stat(big).cyclic(sample_initialization).event+1;
-                         stat(big).cyclic(sample_initialization).time=t;
-              
+                         
                     else
                         B(x,y,t+1) = B(x,y,t);
  
@@ -233,13 +190,12 @@ for(t= 1:time-1),
 end
 %%
  
-end
- 
-if 0 % we dont need this section for now !
+ %%
+if 1 % we dont need this section for now !
 figure
  
 for(rec=1:time)
- 
+drawnow
 subplot(121);
 %%%PLOT FOR ACYCLIC
 h = imagesc(A(2:size-2,2:size-2,rec));
@@ -290,22 +246,16 @@ set(gca,'YTickLabel',[]);
 %%%
  
  
-%M(rec) = getframe(gcf);
+M(rec) = getframe(gcf);
 %close all;
 end
  
-end %if statement
  
 %%Save Figure
 %savefig(strcat(mat2str(big),mat2str(rule_original(:,1))))
 %saveas(gcf,strcat(mat2str(big),mat2str(rule_original(:,1)),'.png'))
 %clearvars -except big;
 %end
-end
 %%
-%movie2avi(M,strcat(mat2str(rule_original(:,1)),'.avi'))
- 
+movie2avi(M,strcat(mat2str(rule_original(:,1)),'.avi'))
 end
- 
- 
-save('2D_statistics_deranged_trackowitz','stat','ruleset')
