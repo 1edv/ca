@@ -44,7 +44,7 @@ ruleset=zeros(6,total_valid_rulesets);
 
 
 %%
-for big = 1:1:100 %loop over all possible rulesets
+for big = index_set %loop over all possible rulesets
 
 
 big

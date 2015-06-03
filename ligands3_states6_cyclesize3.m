@@ -1,5 +1,5 @@
 %% %% PARFOR NEEDS TO WORK
-
+tic
 %% WE WANT TO PERMUTE OVER ALL THE POSSIBLE RULESETS , SO:
 clear all;
 P = PermsRep([1 2 3 4 5 6]);
@@ -30,7 +30,8 @@ parfor i=1:1:total_permutations
     end
 end
 %%
-total_valid_rulesets = numel(index_set)
+
+total_valid_rulesets = numel(index_set);
 %%
 
 
@@ -39,14 +40,14 @@ acyclic_event3=zeros(total_valid_rulesets,10);
 cyclic_event3=zeros(total_valid_rulesets,10);
 acyclic_time3=zeros(total_valid_rulesets,10);
 cyclic_time3=zeros(total_valid_rulesets,10);
-ruleset=zeros(total_valid_rulesets,10);
+ruleset=zeros(6,total_valid_rulesets);
 
 
 %%
-parfor big = 1:1:20 %loop over all possible rulesets
+for big = index_set %loop over all possible rulesets
 
 
-
+big
 %
 %Now what I am going to do is, I am going to have a ruleset and then when I
 %am going to compare the results for graphs that have cycles and graphs
@@ -92,7 +93,7 @@ rule = rule_original(:,1) ;
 
 end
 
-rule_original = P(:,index_set(big));
+rule_original = P(:,big);
 rule=rule_original;
 rule = [ rule rule rule rule rule rule];
 
@@ -118,12 +119,12 @@ final = rule .* graph ;
 %%
 
 %A graph with a cycle so we can see a comparision
-cycle_graph = [ 0 , 0 , 0 , 0 , 0 , 1 ;...
+cycle_graph = [ 0 , 0 , 0 , 0 , 0 , 0 ;...
                 0 , 0 , 0 , 0 , 0 , 0 ;...
                 0 , 0 , 0 , 0 , 0 , 0 ;...
-                1 , 1 , 0 , 0 , 0 , 0 ;...
-                1 , 1 , 0 , 0 , 0 , 0 ;...
-                0 , 1 , 1 , 0 , 1 , 0 ] ;
+                0 , 1 , 0 , 0 , 0 , 1 ;...
+                1 , 0 , 0 , 1 , 0 , 0 ;...
+                0 , 0 , 1 , 0 , 1 , 0 ] ;
 
 
 cycle_final = rule .* cycle_graph ;
@@ -141,7 +142,7 @@ cycle_final = rule .* cycle_graph ;
 %WOULD GIVE US A CYCLIC GRAPH. THINK ABOUT IT.
 
 
-ruleset=[ruleset rule_original];
+ruleset(:,big)= rule_original ;
 
 
 acyclic_event2=zeros(1,10);
@@ -369,10 +370,10 @@ for(t= 1:time-1),
 end
 %%
 
-acyclic_event2(sample_initialization)=acyclic_event1;
-cyclic_event2(sample_initialization)=cyclic_event1;
-acyclic_time2(sample_initialization)=acyclic_time1;
-cyclic_time2(sample_initialization)=cyclic_time1;
+acyclic_event2(1,sample_initialization)=acyclic_event1;
+cyclic_event2(1,sample_initialization)=cyclic_event1;
+acyclic_time2(1,sample_initialization)=acyclic_time1;
+cyclic_time2(1,sample_initialization)=cyclic_time1;
 
 %%
 if 0 % we dont need this section for now !
@@ -444,13 +445,14 @@ end %if statement
 
 end
 
-acyclic_event3(=[acyclic_event3 ;acyclic_event2];
-cyclic_event3=[cyclic_event3 ;cyclic_event2];
-acyclic_time3=[acyclic_time3 ;acyclic_time2];
-cyclic_time3=[cyclic_time3 ;cyclic_time2];
+acyclic_event3(big,:)=acyclic_event2;
+cyclic_event3(big,:)=cyclic_event2;
+acyclic_time3(big,:)=acyclic_time2;
+cyclic_time3(big,:)=cyclic_time2;
 
 %%
 %movie2avi(M,strcat(mat2str(rule_original(:,1)),'.avi'))
 end
 
-%save('2D_statistics_deranged_parfor','index_set','ruleset','acyclic_event3','cyclic_event3','acyclic_time3','cyclic_time3')
+save('ligands3_states6_cyclesize3','index_set','ruleset','acyclic_event3','cyclic_event3','acyclic_time3','cyclic_time3')
+toc
