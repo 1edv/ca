@@ -1,43 +1,18 @@
 %% WE WANT TO PERMUTE OVER ALL THE POSSIBLE RULESETS , SO:
 clear all;
-P = PermsRep([1 2 3 4 5 6]);
-P = P';
-total_permutations = size(P,2);
+
 %I have 6 states from that email. Lets see what I can do with them. Hmm...
 total_states = 6 ;
 ruleset=[];
 %Random sizes and times for 1D initialization.
 size = 21;
-time = 101;
 
-for big = 1:1:total_permutations %loop over all possible rulesets
-for sample_initialization=1:1:20
- 
-stat(big).acyclic(sample_initialization).event=0;
-stat(big).acyclic(sample_initialization).time=1;  
-stat(big).cyclic(sample_initialization).event=0;
-stat(big).cyclic(sample_initialization).time=1;      
-    
-end
-end
-%%
+time = 21;
 
-index_set=[];
-for i=1:1:total_permutations
-    
-    rule_original = P(:,i); 
 
-    if (rule_original(1)~=1 & ...
-        rule_original(2)~=2 & ...
-        rule_original(3)~=3 & ...
-        rule_original(4)~=4 & ...
-        rule_original(5)~=5 & ...
-        rule_original(6)~=6 )
-            index_set=[index_set i];
-            
-    end       
-end
-parfor big = 1:1:total_permutations %loop over all possible rulesets
+
+
+
 
 
     
@@ -52,20 +27,18 @@ parfor big = 1:1:total_permutations %loop over all possible rulesets
 
 
 
-%rule_original = [ 4 , 0 ;...
- %        3 , 0 ;...
- %        2 , 0 ;...
- %        1 , 0 ;...
- %        4 , 0 ;...
- %        2 , 0 ] ;
+rule_original = [ 2 , 0 ;...
+                  3 , 0 ;...
+                  4 , 0 ;...
+                  5 , 0 ;...
+                  2 , 0 ;...
+                  1 , 0 ] ;
 
-%rule = rule_original(:,1) ;
+rule = rule_original(:,1) ;
 
 
-rule_original = P(:,big); 
-rule = rule_original;
 
-%%
+
 rule = [ rule rule rule rule rule rule];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -89,12 +62,12 @@ final = rule .* graph ;
 
 
 %A graph with a cycle so we can see a comparision
-cycle_graph = [ 0 , 0 , 0 , 0 , 0 , 1 ;...
-          0 , 0 , 0 , 0 , 0 , 0 ;...
-          0 , 0 , 0 , 0 , 0 , 0 ;...
-          1 , 1 , 0 , 0 , 0 , 0 ;...
-          1 , 1 , 0 , 0 , 0 , 0 ;...
-          0 , 1 , 1 , 0 , 1 , 0 ] ;
+cycle_graph = [ 1 , 1 , 1 , 1 , 1 , 1 ;...
+                1 , 1 , 1 , 1 , 1 , 1 ;...
+                1 , 1 , 1 , 1 , 1 , 1 ;...
+                1 , 1 , 1 , 1 , 1 , 1 ;...
+                1 , 1 , 1 , 1 , 1 , 1 ;...
+                1 , 1 , 1 , 1 , 1 , 1 ] ;
       
 
 cycle_final = rule .* cycle_graph ;
@@ -116,17 +89,11 @@ cycle_final = rule .* cycle_graph ;
 % I am imposing a condition here : the rule must not allow 1->1 , 2->2
 % ,etc. Basically, I am not allowing no transition
 
-if (rule_original(1)~=1 & ...
-    rule_original(2)~=2 & ...
-    rule_original(3)~=3 & ...
-    rule_original(4)~=4 & ...
-    rule_original(5)~=5 & ...
-    rule_original(6)~=6 )
-    
-    
-ruleset=[ruleset rule_original]
 
-for sample_initialization = 1:1:20    
+    
+    
+ruleset=[ruleset rule_original];
+
     
 
 
@@ -134,7 +101,7 @@ for sample_initialization = 1:1:20
 A = randi([1 total_states],1,size);
 A = repmat ( A, time, 1);
 
-%%
+
 
 %B is A for cyclic
 B = A;
@@ -181,13 +148,11 @@ for(t= 1:time-1),
         %%FOR ACYCLIC
         if( graph(A(t,i),A(t,i-1)) ~= 0  ) ,
                 A(t+1,i) = final(A(t,i) ,A(t,i-1));
-                stat(big).acyclic(sample_initialization).event=stat(big).acyclic(sample_initialization).event+1;
-                stat(big).acyclic(sample_initialization).time=t;
+                
                 
         elseif( graph(A(t,i),A(t,i+1)) ~= 0 )
                 A(t+1,i) = final(A(t,i) ,A(t,i+1));
-                stat(big).acyclic(sample_initialization).event=stat(big).acyclic(sample_initialization).event+1;
-                stat(big).acyclic(sample_initialization).time=t;
+               
                 
         else
                 A(t+1,i) = A(t,i);
@@ -198,13 +163,11 @@ for(t= 1:time-1),
         %FOR CYCLIC   
            if(   cycle_graph(B(t,i),B(t,i-1)) ~= 0  ) ,
                 B(t+1,i) = cycle_final(B(t,i) ,B(t,i-1));
-                stat(big).cyclic(sample_initialization).event=stat(big).cyclic(sample_initialization).event+1;
-                stat(big).cyclic(sample_initialization).time=t;
+                
                 
            elseif( cycle_graph(B(t,i),B(t,i+1)) ~= 0 ) 
                 B(t+1,i) = cycle_final(B(t,i) ,B(t,i+1));
-                stat(big).cyclic(sample_initialization).event=stat(big).cyclic(sample_initialization).event+1;
-                stat(big).cyclic(sample_initialization).time=t;
+                
            else
                 B(t+1,i) = B(t,i);
 
@@ -217,7 +180,7 @@ end
 
 
 
-if 0 % no need for figures
+if 1 % no need for figures
 
 figure
 
@@ -275,11 +238,9 @@ end %No need for figures
 %saveas(gcf,strcat(mat2str(big),mat2str(rule_original(:,1)),'.png'))
 %clearvars -except big;
 %close all
-end
 
-end
 
-end
+
 %%
 
-save('1D_statistics_deranged_trackowitz','stat','ruleset')
+%save('1D_statistics_deranged_trackowitz','stat','ruleset')

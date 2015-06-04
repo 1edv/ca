@@ -75,8 +75,11 @@ end
     
 
 %% SCATTER PLOt
+cyclic_time3(cyclic_time3==0)=NaN;
+acyclic_time3(acyclic_time3==0)=NaN;
+
 figure
-scatterhist(mean(acyclic_event3,2), mean(cyclic_event3,2))
+scatterhist(mean(acyclic_time3,2), mean(cyclic_time3,2))
 xlabel('Acyclic - Time to Stabilization');
 ylabel('Cyclic - Time to Stabilization');
 refline(1,0)

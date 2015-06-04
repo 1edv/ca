@@ -46,7 +46,7 @@ ruleset=zeros(6,total_valid_rulesets);
 
 
 %%
-for big = index_set %loop over all possible rulesets
+for big = index_set(1:100) %loop over all possible rulesets
 
 big
 %
@@ -105,7 +105,6 @@ rule = [ rule rule rule rule rule rule];
 graph = zeros(total_states,total_states);
 
 %The graph from the lauren paper is the following DAG
-
 graph = [ 0 , 0 , 0 , 0 , 0 , 0 ;...
           0 , 0 , 0 , 0 , 0 , 0 ;...
           0 , 0 , 0 , 0 , 0 , 0 ;...
@@ -123,10 +122,10 @@ final = rule .* graph ;
 %A graph with a cycle so we can see a comparision
 cycle_graph = [ 0 , 0 , 0 , 0 , 0 , 0 ;...
                 0 , 0 , 0 , 0 , 0 , 0 ;...
+                1 , 0 , 0 , 0 , 0 , 0 ;...
                 1 , 0 , 0 , 0 , 0 , 1 ;...
-                0 , 1 , 0 , 0 , 1 , 0 ;...
-                1 , 0 , 0 , 0 , 0 , 1 ;...
-                0 , 1 , 0 , 0 , 1 , 0 ] ;
+                1 , 0 , 0 , 1 , 0 , 0 ;...
+                0 , 0 , 1 , 0 , 1 , 0 ] ;
 
 
 cycle_final = rule .* cycle_graph ;
@@ -456,5 +455,5 @@ cyclic_time3(big,:)=cyclic_time2;
 %movie2avi(M,strcat(mat2str(rule_original(:,1)),'.avi'))
 
 end
-save('ligands2_states6_cyclesize1_2','index_set','ruleset','acyclic_event3','cyclic_event3','acyclic_time3','cyclic_time3')
+%save('ligands3_states6_cyclesize3_1','index_set','ruleset','acyclic_event3','cyclic_event3','acyclic_time3','cyclic_time3')
 toc
