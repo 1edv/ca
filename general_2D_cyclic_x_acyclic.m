@@ -46,9 +46,9 @@ ruleset=zeros(6,total_valid_rulesets);
 
 
 %%
-for big = index_set %loop over all possible rulesets
+parfor i = 1:50 %loop over all possible rulesets
 
-big
+big = index_set(i)
 %
 %Now what I am going to do is, I am going to have a ruleset and then when I
 %am going to compare the results for graphs that have cycles and graphs
@@ -203,7 +203,7 @@ for(t= 1:time-1),
 
                     %-1,-1
 
-                    if( graph(A(x,y,t),A(x-1,y-1,t)) ~= 0  ) ,
+                    if( graph(A(x,y,t),A(x-1,y-1,t)) ~= 0 & 0 ) ,
                         a_signal=1;
                         a_signal_x = x-1;
                         a_signal_y = y-1;
@@ -217,7 +217,7 @@ for(t= 1:time-1),
                     end
 
                      %-1,1
-                    if( graph(A(x,y,t),A(x-1,y+1,t)) ~= 0  ) ,
+                    if( graph(A(x,y,t),A(x-1,y+1,t)) ~= 0  & 0) ,
                         a_signal=1;
                         a_signal_x = x-1;
                         a_signal_y = y+1;
@@ -240,7 +240,7 @@ for(t= 1:time-1),
 
 
                      %1,-1
-                    if( graph(A(x,y,t),A(x+1,y-1,t)) ~= 0  ) ,
+                    if( graph(A(x,y,t),A(x+1,y-1,t)) ~= 0 & 0 ) ,
                         a_signal=1;
                         a_signal_x = x+1;
                         a_signal_y = y-1;
@@ -254,7 +254,7 @@ for(t= 1:time-1),
                     end
 
                      %1,1
-                    if( graph(A(x,y,t),A(x+1,y+1,t)) ~= 0  ) ,
+                    if( graph(A(x,y,t),A(x+1,y+1,t)) ~= 0 & 0 ) ,
                         a_signal=1;
                         a_signal_x = x+1;
                         a_signal_y = y+1;
@@ -274,7 +274,7 @@ for(t= 1:time-1),
                     %CHECK FOR THE CYCLIC GRAPH
 
                     %-1,-1
-                    if( cycle_graph(B(x,y,t),B(x-1,y-1,t)) ~= 0  ) ,
+                    if( cycle_graph(B(x,y,t),B(x-1,y-1,t)) ~= 0 & 0 ) ,
                         c_signal=1;
                         c_signal_x = x-1;
                         c_signal_y = y-1;
@@ -290,7 +290,7 @@ for(t= 1:time-1),
                     end
 
                     %-1,1
-                    if( cycle_graph(B(x,y,t),B(x-1,y+1,t)) ~= 0  ) ,
+                    if( cycle_graph(B(x,y,t),B(x-1,y+1,t)) ~= 0  & 0) ,
                         c_signal=1;
                         c_signal_x = x-1;
                         c_signal_y = y+1;
@@ -314,7 +314,7 @@ for(t= 1:time-1),
                     end
 
                     %1,-1
-                    if( cycle_graph(B(x,y,t),B(x+1,y-1,t)) ~= 0  ) ,
+                    if( cycle_graph(B(x,y,t),B(x+1,y-1,t)) ~= 0 & 0 ) ,
                         c_signal=1;
                         c_signal_x = x+1;
                         c_signal_y = y-1;
@@ -330,7 +330,7 @@ for(t= 1:time-1),
                     end
 
                     %1,1
-                    if( cycle_graph(B(x,y,t),B(x+1,y+1,t)) ~= 0  ) ,
+                    if( cycle_graph(B(x,y,t),B(x+1,y+1,t)) ~= 0  & 0) ,
                         c_signal=1;
                         c_signal_x = x+1;
                         c_signal_y = y+1;
@@ -456,5 +456,5 @@ cyclic_time3(big,:)=cyclic_time2;
 %movie2avi(M,strcat(mat2str(rule_original(:,1)),'.avi'))
 
 end
-save('ligands2_states6_cyclesize1_2','index_set','ruleset','acyclic_event3','cyclic_event3','acyclic_time3','cyclic_time3')
+%save('ligands2_states6_cyclesize1_2','index_set','ruleset','acyclic_event3','cyclic_event3','acyclic_time3','cyclic_time3')
 toc
